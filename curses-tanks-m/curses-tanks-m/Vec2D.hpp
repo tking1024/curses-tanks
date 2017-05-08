@@ -2,9 +2,12 @@
 #include "ground.hpp"
 #include "player.hpp"
 
-Class Vec2D
+class Vec2D
 {
 public:
+    double x;
+    double y;
     
+    Vec2D(double input_x, double input_y);
     
-}
+};
