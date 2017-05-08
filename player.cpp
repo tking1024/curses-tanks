@@ -35,11 +35,7 @@ void Player::Initialize(int column, int line, Side side)
 
 void Player::Draw(Ground & g)
 {
-<<<<<<< Updated upstream
-	mvaddch(g.ground.at(col) - 1, col + 1, '▄');
-=======
-    mvaddch(g.ground.at(col) - 1, col + 1, '@');
->>>>>>> Stashed changes
+	mvaddch(g.ground.at(col) - 1, col + 1, ACS_DIAMOND);
 }
 
 void Player::PowerUp()
