@@ -21,19 +21,25 @@ Player::Player()
 {
 	s = LEFT;
 	col = 0;
+    lin = 0;
 	angle = 45.0;
 	power = 50.0;
 }
 
-void Player::Initialize(int column, Side side)
+void Player::Initialize(int column, int line, Side side)
 {
-	col = column;
+    lin = line;
+    col = column;
 	s = side;
 }
 
 void Player::Draw(Ground & g)
 {
+<<<<<<< Updated upstream
 	mvaddch(g.ground.at(col) - 1, col + 1, '▄');
+=======
+    mvaddch(g.ground.at(col) - 1, col + 1, '@');
+>>>>>>> Stashed changes
 }
 
 void Player::PowerUp()
@@ -99,9 +105,10 @@ void Player::DrawSettings(int turn)
 bool Player::Hit(int line, int column, Player & p)
 {
     bool rv = false;
-    if ((line == 1 || 2 || 3) && (col == p.col || p.col + 1 || p.col  - 1))
+    if (((column == p.col) || (column == p.col + 1) || (column == p.col - 1)) && ((line == p.lin) || (line == p.lin + 1) || (line == p.lin - 1)))
+    {
         rv = true;
-        
+    }
     return rv;
     
 }

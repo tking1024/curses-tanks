@@ -63,29 +63,45 @@ void Shoot(Ground & g, Player * players, int turn)
 	double p0y = g.ground.at(players[turn].col);
 	// higher ground numbers are lower altitudes (0 is first line, etc).
 	p0y = LINES - p0y;
-	for (int i = 1; i < 5000; i++)
+    
+   	for (int i = 1; i < 10000; i++)
 	{
 		double di = i / time_divisor;
 
 		pNx = (int)(p0x + di * x_component);
 		pNy = p0y + di * y_component + (di * di + di) * -9.8 / time_divisor / 1.5;
 		pNy = (int)(LINES - pNy);
+        
 		if (pNx < 1 || pNx >= COLS - 2)
 			break;
 		if (pNy < 1) {
 			MySleep(50);
 			continue;
 		}
-	//	if (pNy >= LINES - 2)
-	//		break;
+		//if (pNy >= LINES - 2)
+			//break;
 		if (pNy > g.ground.at((int)pNx))
 			break;
-
-		move((int)pNy - 1, (int)pNx + 1);
+        
+        if (players[turn].Hit((int)pNx, (int)pNy, players[abs(turn-1)]))
+            {
+                players[abs(turn - 1)].life_counter--;
+                break;
+            }
+        
+        move((int)pNy - 1, (int)pNx + 1);
 		addch('*');
-		refresh();
+        refresh();
 		MySleep(50);
-	}
+    
+        
+        //if (players[abs(turn-1)].Hit((int)pNx, (int)pNy /*players[abs(turn - 1)]*/))
+        //{
+        //    players[abs(turn - 1)].life_counter--;
+        //    break;
+        //}
+    }
+
 }
 
 int main(int argc, char * argv[])
@@ -102,8 +118,8 @@ int main(int argc, char * argv[])
 	keypad(stdscr, 1);
 
 	g.InitializeGround();
-	players[0].Initialize(rand() % (COLS / 4), LEFT);
-	players[1].Initialize(rand() % (COLS / 4) + 3 * COLS / 4 - 2, RIGHT);
+	players[0].Initialize(rand() % (COLS / 4), g.ground.at(players[0].col) - 1, LEFT);
+	players[1].Initialize(rand() % (COLS / 4) + 3 * COLS / 4 - 2, g.ground.at(players[1].col) - 1, RIGHT);
 
 	DrawScreen(g, players, turn);
 	while (keep_going)
@@ -145,7 +161,7 @@ int main(int argc, char * argv[])
 			show_char = true;
 			break;
 		}
-		DrawScreen(g, players, turn);
+        DrawScreen(g, players, turn);
 		if (show_char) {
 			move(0, 1);
 			stringstream ss;

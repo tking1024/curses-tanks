@@ -12,7 +12,7 @@ class Player
 public:
 	Player();
 	void Draw(Ground & ground);
-	void Initialize(int column, Side side);
+	void Initialize(int column, int line, Side side);
 	void DrawSettings(int turn);
 	void PowerUp();
 	void PowerDown();
@@ -22,6 +22,7 @@ public:
     bool Hit(int line, int col, Player & p);
 
 	int col;
+    int lin;
 	double power;
 	double angle;
 	Side s;
