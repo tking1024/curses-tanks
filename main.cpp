@@ -38,7 +38,6 @@ void DrawScreen(Ground & g, Player * players, int turn)
 	erase();
 	box(stdscr, 0, 0);
 	g.Draw();
-    g.Fill();
 	players[0].Draw(g);
 	players[1].Draw(g);
 	players[0].DrawSettings(turn);
@@ -69,9 +68,7 @@ void Die(int player_number)
     mvaddstr(10, 1, "                        \\$$$$$$  |                                                                          ");
     mvaddstr(11, 1, "                         \\______/                                                                           ");
         refresh();
-        MySleep(100000);
-        endwin();
-     
+        MySleep(10000);
     }
     if (player_number == 2)
     {
@@ -85,8 +82,8 @@ void Die(int player_number)
         mvaddstr(7, 1, "| $$      | $$$$$$$$| $$  | $$    | $$    | $$$$$$$$| $$  | $$      | $$$$$$$$      | $$$$$$$/ /$$$$$$| $$$$$$$$| $$$$$$$/");
         mvaddstr(8, 1, "|__/      |________/|__/  |__/    |__/    |________/|__/  |__/      |________/      |_______/ |______/|________/|_______/ ");
         refresh();
-        MySleep(100000);
-        endwin();
+        MySleep(10000);
+
     }
 }
     
@@ -97,23 +94,21 @@ void Shoot(Ground & g, Player * players, int turn)
 	double angle = players[turn].angle / 180.0 * PI;
 
     Vec2D p0 (players[turn].col, LINES - g.ground.at(players[turn].col));
-    Vec2D force(sin(angle) * players[turn].power * 0.2, cos(angle) * players[turn].power * 0.2);
+    Vec2D force(cos(angle) * players[turn].power * 0.2, sin(angle) * players[turn].power * 0.2);
  	Vec2D gravity(0, -9.8);
 	
 	double time_divisor = 15.0;
    
     if (players[turn].s == RIGHT)
 		force.x = -force.x;
-		 
-	double x = 0.0;
-	double y = 0.0;
     
    	for (int i = 1; i < 10000; i++)
 	{
 		double di = i / time_divisor;
-        Vec2D pN(x,y);
+        // Vec2D pN(x,y);
+        Vec2D pN = p0 + force * di + gravity * (di * di + di) * 0.5 ;
 
-		pN.x = (int)(p0.x + di * force.x);
+        pN.x = (int)(p0.x + di * force.x);
 		pN.y = p0.y + di * force.y + (di * di + di) * gravity.y / time_divisor;
 		pN.y = (int)(LINES - pN.y);
         
@@ -132,18 +127,33 @@ void Shoot(Ground & g, Player * players, int turn)
         move((int)pN.y - 1, (int)pN.x + 1);
         addch('*');
         refresh();
-        MySleep(50);
+        MySleep(5);
         
         if (players[turn].Hit((int)pN.x, (int)pN.y, g, players[abs(turn - 1)]))
         {
             players[abs(turn - 1)].life_counter--;
+            if (players[0].life_counter == 0)
+            {
+                Die(1);
+                break;
+            }
+            if (players[1].life_counter == 0)
+            {
+                Die(2);
+                break;
+            }
+            if (abs(turn - 1) == 0)
+            {
+                players[0].Initialize(rand() % (COLS / 4), g.ground.at(players[0].col) - 1, LEFT);
+            }
+            if (abs(turn - 1) == 1)
+            {
+                players[1].Initialize(rand() % (COLS / 4) + 3 * COLS / 4 - 2, g.ground.at(players[1].col) - 1, RIGHT);
+            }
+                
             break;
         }
         
-        if (players[turn].life_counter == 0)
-        {
-            Die(turn + 1);
-        }
         refresh();
         MySleep(50);
         
@@ -201,11 +211,13 @@ int main(int argc, char * argv[])
         
         case 'k':
             Die(1);
-            break;
+                keep_going = false;
+                break;
                 
         case 'j':
             Die(2);
-            break;
+                keep_going = false;
+                break;
                 
 		case 10:
 		case KEY_ENTER:
