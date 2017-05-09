@@ -13,7 +13,6 @@ Vec2D::Vec2D(double input_x, double input_y)
 {
     x = input_x;
     y = input_y;
-    
         
 }
 
@@ -69,10 +68,10 @@ Vec2D Vec2D::operator*(int& i_other)
     return Vec2D(result_x,result_y);*/
 }
 
-Vec2D Vec2D::operator=(const Vec2D& other)
+/*Vec2D Vec2D::operator=(const Vec2D& other)
 {
     x = other.x;
     y = other.y;
     return *this;
 
-}
+}*/
