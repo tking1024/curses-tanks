@@ -20,21 +20,34 @@ Vec2D::Vec2D(double input_x, double input_y)
 
 Vec2D Vec2D::operator+(const Vec2D& other)
 {
-    x = x + other.x;
-    y = y + other.y;
-    return Vec2D(x,y);
+    double result_x;
+    double result_y;
+    result_x = x + other.x;
+    result_y = y + other.y;
+    return Vec2D(result_x,result_y);
 }
 
 Vec2D Vec2D::operator*(const double& d_other)
 {
-    x = x + d_other;
-    y = y + d_other;
-    return Vec2D(x,y);
+    double result_x;
+    double result_y;
+    result_x = x * d_other;
+    result_y = y * d_other;
+    return Vec2D(result_x,result_y);
 }
 
 Vec2D Vec2D::operator*(const int& i_other)
 {
-    x = x * i_other;
-    y = y * i_other;
-    return Vec2D(x,y);
+    double result_x;
+    double result_y;
+    result_x = x * i_other;
+    result_y = y * i_other;
+    return Vec2D(result_x,result_y);
+}
+
+Vec2D Vec2D::operator=(const Vec2D& other)
+{
+    x = other.x;
+    y = other.y;
+    return *this;
 }
