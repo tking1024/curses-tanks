@@ -13,6 +13,7 @@ public:
     Vec2D operator+(const Vec2D& other);
     Vec2D operator*(const double& d_other);
     Vec2D operator*(const int& i_other);
+    Vec2D operator=(const Vec2D& other);
     
     
 };
