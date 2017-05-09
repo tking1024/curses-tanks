@@ -45,29 +45,19 @@ void DrawScreen(Ground & g, Player * players, int turn)
 	refresh();
 }
 
-//http://www.iforce2d.net/b2dtut/projected-trajectory
 
 void Shoot(Ground & g, Player * players, int turn)
 {
 	double angle = players[turn].angle / 180.0 * PI;
 
-
+    Vec2D p0 (players[turn].col, LINES - g.ground.at(players[turn].col));
     Vec2D force(sin(angle) * players[turn].power * 0.2, cos(angle) * players[turn].power * 0.2);
- 	Vec2D gravity(0, -9.8); // or a different value of your choosing.
+ 	Vec2D gravity(0, -9.8);
 	
 	double time_divisor = 15.0;
-    //double y_component = sin(angle) * players[turn].power * 0.2;
-	//double x_component = cos(angle) * players[turn].power * 0.2;
-
-	
-    Vec2D p0 (players[turn].col, LINES - g.ground.at(players[turn].col));
-	//double pNx;
-	//double pNy;
-		
-	if (players[turn].s == RIGHT)
+   
+    if (players[turn].s == RIGHT)
 		force.x = -force.x;
-
-	p0.y = LINES - p0.y;
 		 
 	double x = 0.0;
 	double y = 0.0;
@@ -75,27 +65,33 @@ void Shoot(Ground & g, Player * players, int turn)
    	for (int i = 1; i < 10000; i++)
 	{
 		double di = i / time_divisor;
-		
         Vec2D pN(x,y);
 
 		pN.x = (int)(p0.x + di * force.x);
-		pN.y = p0.y + di * force.y + (di * di + di) * -9.8 / time_divisor / 1.5;
+		pN.y = p0.y + di * force.y + (di * di + di) * gravity.y / time_divisor;
 		pN.y = (int)(LINES - pN.y);
         
 		if (pN.x < 1 || pN.x >= COLS - 2)
 			break;
-		if (pN.y < 1)
-            break;
+        if (pN.y < 1)
+        {
+            
+            MySleep(50);
+            continue;
+        }
         
+        if (pN.y > g.ground.at((int)pN.x))
+            break;
         
         move((int)pN.y - 1, (int)pN.x + 1);
         addch('*');
         refresh();
         MySleep(50);
         
-        if (players[abs(turn-1)].Hit((int)pN.x, (int)pN.y, players[abs(turn - 1)]))
+        if (players[turn].Hit((int)pN.x, (int)pN.y, g, players[abs(turn - 1)]))
         {
             players[abs(turn - 1)].life_counter--;
+            DrawScreen(g, players, turn);
             break;
         }
         refresh();

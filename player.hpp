@@ -19,7 +19,7 @@ public:
 	void AngleUp();
 	void AngleDown();
     
-    bool Hit(int line, int col, Player & p);
+    bool Hit(int column, int line, Ground & g, Player & p);
 
 	int col;
     int lin;

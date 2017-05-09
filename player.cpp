@@ -28,9 +28,10 @@ Player::Player()
 
 void Player::Initialize(int column, int line, Side side)
 {
-    lin = line;
+    
     col = column;
-	s = side;
+    lin = line;
+    s = side;
 }
 
 void Player::Draw(Ground & g)
@@ -98,10 +99,10 @@ void Player::DrawSettings(int turn)
     mvaddstr(line++, starting_column, ss.str().c_str());
 }
 
-bool Player::Hit(int line, int column, Player & p)
+bool Player::Hit(int column, int line, Ground & g, Player& p)
 {
     bool rv = false;
-    if (((column == p.col) || (column == p.col + 1) || (column == p.col - 1)) && ((line == p.lin) || (line == p.lin + 1) || (line == p.lin - 1)))
+    if (((column == p.col) || (column == p.col + 1) || (column == p.col - 1)) && ((line == (g.ground.at(p.col) - 1) || (line == g.ground.at(p.col) || (line == (g.ground.at(p.col) - 2))))))
     {
         rv = true;
     }
