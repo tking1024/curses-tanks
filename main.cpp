@@ -49,47 +49,57 @@ void DrawScreen(Ground & g, Player * players, int turn)
 void Shoot(Ground & g, Player * players, int turn)
 {
 	double angle = players[turn].angle / 180.0 * PI;
+	
 	double y_component = sin(angle) * players[turn].power * 0.2;
 	double x_component = cos(angle) * players[turn].power * 0.2;
 	
-	double pNx;
-	double pNy;
+	Vec2D p0(players[turn].col, g.ground.at(players[turn].col);
+ 	Vec2D force(sin(angle) * players[turn].power * 0.2, cos(angle) * players[turn].power * 0.2);
+ 	Vec2D gravity(0, -0.98); // or a different value of your choosing.
+	
+	//double pNx;
+	//double pNy;
 	double time_divisor = 15.0;
 	
 	if (players[turn].s == RIGHT)
-		x_component = -x_component;
+		force.x = -force.x;
 
-	double p0x = players[turn].col;
-	double p0y = g.ground.at(players[turn].col);
+	//double p0x = players[turn].col;
+	//double p0y = g.ground.at(players[turn].col);
 	// higher ground numbers are lower altitudes (0 is first line, etc).
-	p0y = LINES - p0y;
+	p0.y = LINES - p0.y;
+		 
+	double x = 0.0;
+	double y = 0.0;
     
    	for (int i = 1; i < 10000; i++)
 	{
 		double di = i / time_divisor;
+		
+		Vec2D pN(x , y);
 
-		pNx = (int)(p0x + di * x_component);
-		pNy = p0y + di * y_component + (di * di + di) * -9.8 / time_divisor / 1.5;
-		pNy = (int)(LINES - pNy);
+		pN.x = (int)(p0.x + di * force.x);
+		pN.y = p0.y + di * force.y + (di * di + di) * -9.8 / time_divisor / 1.5;
+		pN.y = (int)(LINES - pN.y);
         
-		if (pNx < 1 || pNx >= COLS - 2)
+		if (pN.x < 1 || pN.x >= COLS - 2)
 			break;
-		if (pNy < 1) {
+		if (pN.y < 1) {
 			MySleep(50);
 			continue;
 		}
 		//if (pNy >= LINES - 2)
 			//break;
-		if (pNy > g.ground.at((int)pNx))
+		if (pN.y > g.ground.at((int)pN.x))
 			break;
         
-        if (players[turn].Hit((int)pNx, (int)pNy, players[abs(turn-1)]))
+        if (players[turn].Hit((int)pN.x, (int)pN.y, players[abs(turn-1)]))
             {
                 players[abs(turn - 1)].life_counter--;
                 break;
             }
         
-        move((int)pNy - 1, (int)pNx + 1);
+        move((int)pN.y - 1, (int)pN.x + 1);
 		addch('*');
         refresh();
 		MySleep(50);
