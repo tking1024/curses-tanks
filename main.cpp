@@ -16,6 +16,7 @@
 
 #include "ground.hpp"
 #include "player.hpp"
+#include "Vec2D.hpp"
 
 using namespace std;
 
@@ -49,30 +50,44 @@ void DrawScreen(Ground & g, Player * players, int turn)
 void Shoot(Ground & g, Player * players, int turn)
 {
 	double angle = players[turn].angle / 180.0 * PI;
+
 	
-	double y_component = sin(angle) * players[turn].power * 0.2;
-	double x_component = cos(angle) * players[turn].power * 0.2;
+	//double y_component = sin(angle) * players[turn].power * 0.2;
+	//double x_component = cos(angle) * players[turn].power * 0.2;
 	
-	Vec2D p0(players[turn].col, g.ground.at(players[turn].col);
+	Vec2D p0(players[turn].col, g.ground.at(players[turn].col));
  	Vec2D force(sin(angle) * players[turn].power * 0.2, cos(angle) * players[turn].power * 0.2);
  	Vec2D gravity(0, -0.98); // or a different value of your choosing.
 	
 	//double pNx;
 	//double pNy;
-	double time_divisor = 15.0;
+	//double time_divisor = 15.0;
+
+    //double time_divisor = 15.0;
+    //double y_component = sin(angle) * players[turn].power * 0.2;
+	//double x_component = cos(angle) * players[turn].power * 0.2;
+
 	
+    //Vec2D p0 (players[turn].col, LINES - g.ground.at(players[turn].col));
+    //Vec2D force (cos(angle) * players[turn].power * 0.2,sin(angle) * players[turn].power * 0.2);
+    //Vec2D gravity (0, -9.8);
+    
+	//double pNx;
+	//double pNy;
+		
 	if (players[turn].s == RIGHT)
 		force.x = -force.x;
 
 	//double p0x = players[turn].col;
 	//double p0y = g.ground.at(players[turn].col);
 	// higher ground numbers are lower altitudes (0 is first line, etc).
+
 	p0.y = LINES - p0.y;
 		 
-	double x = 0.0;
-	double y = 0.0;
+	//double x = 0.0;
+	//double y = 0.0;
     
-   	for (int i = 1; i < 10000; i++)
+   	/*for (int i = 1; i < 10000; i++)
 	{
 		double di = i / time_divisor;
 		
@@ -85,6 +100,20 @@ void Shoot(Ground & g, Player * players, int turn)
 		if (pN.x < 1 || pN.x >= COLS - 2)
 			break;
 		if (pN.y < 1) {
+   	for (int i = 1; i < 10000; i++)
+	{
+		double di = i / time_divisor;
+        Vec2D pN = p0 + (force * di) + gravity * (di * di + di) * 0.5;
+        
+        //pNx = (int)(p0x + di * x_component);
+		//pNy = p0y + di * y_component + (di * di + di) * -9.8 / time_divisor / 1.5;
+		//pNy = (int)(LINES - pNy);
+        
+		if (pN.x < 1 || pN.x >= COLS - 2)
+			break;
+		if (pN.y < 1)
+        {
+
 			MySleep(50);
 			continue;
 		}
@@ -99,18 +128,22 @@ void Shoot(Ground & g, Player * players, int turn)
                 break;
             }
         
+
         move((int)pN.y - 1, (int)pN.x + 1);
+
+        move((int)pN.x - 1, (int)pN.y + 1);
+
 		addch('*');
         refresh();
 		MySleep(50);
     
         
-        //if (players[abs(turn-1)].Hit((int)pNx, (int)pNy /*players[abs(turn - 1)]*/))
+        //if (players[abs(turn-1)].Hit((int)pNx, (int)pNy players[abs(turn - 1)]))
         //{
         //    players[abs(turn - 1)].life_counter--;
         //    break;
         //}
-    }
+    }*/
 
 }
 
@@ -188,3 +221,4 @@ int main(int argc, char * argv[])
 	endwin();
 	return 0;
 }
+
