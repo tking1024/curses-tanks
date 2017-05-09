@@ -38,12 +38,58 @@ void DrawScreen(Ground & g, Player * players, int turn)
 	erase();
 	box(stdscr, 0, 0);
 	g.Draw();
+    g.Fill();
 	players[0].Draw(g);
 	players[1].Draw(g);
 	players[0].DrawSettings(turn);
 	players[1].DrawSettings(turn);
 	refresh();
 }
+
+void Die(int player_number)
+{
+    start_color();
+    init_pair(1, COLOR_RED, COLOR_BLACK);
+    attron(1);
+    
+    clear();
+    refresh();
+    
+    if (player_number == 1)
+    {
+    mvaddstr(1, 1, "$$$$$$$\\ $$\\                                                 $$\\         $$$$$$$\\  $$\\                 $$\\" );
+    mvaddstr(2, 1, "$$  __$$\\ $$ |                                              $$$$ |        $$  __$$\\ \\__|                $$ |");
+    mvaddstr(3, 1, "$$ |  $$ |$$ | $$$$$$\\  $$\\   $$\\  $$$$$$\\   $$$$$$\\        \\_$$ |        $$ |  $$ |$$\\  $$$$$$\\   $$$$$$$ |");
+    mvaddstr(4, 1, "$$$$$$$  |$$ | \\____$$\\ $$ |  $$ |$$  __$$\\ $$  __$$\\         $$ |        $$ |  $$ |$$ |$$  __$$\\ $$  __$$ |");
+    mvaddstr(5, 1, "$$  ____/ $$ | $$$$$$$ |$$ |  $$ |$$$$$$$$ |$$ |  \\__|        $$ |        $$ |  $$ |$$ |$$$$$$$$ |$$ /  $$ |");
+    mvaddstr(6, 1, "$$ |      $$ |$$  __$$ |$$ |  $$ |$$   ____|$$ |              $$ |        $$ |  $$ |$$ |$$   ____|$$ |  $$ |");
+    mvaddstr(7, 1, "$$ |      $$ |\\$$$$$$$ |\\$$$$$$$ |\\$$$$$$$\\ $$ |            $$$$$$\\       $$$$$$$  |$$ |\\$$$$$$$\\ \\$$$$$$$ |");
+    mvaddstr(8, 1, "\\__|      \\__| \\_______| \\____$$ | \\_______|\\__|            \\______|      \\_______/ \\__| \\_______| \\_______|");
+    mvaddstr(9, 1, "                        $$\\   $$ |                                                                          ");
+    mvaddstr(10, 1, "                        \\$$$$$$  |                                                                          ");
+    mvaddstr(11, 1, "                         \\______/                                                                           ");
+        refresh();
+        MySleep(100000);
+        endwin();
+     
+    }
+    if (player_number == 2)
+    {
+        
+        mvaddstr(1, 1, " /$$$$$$$  /$$        /$$$$$$  /$$     /$$ /$$$$$$$$ /$$$$$$$         /$$$$$$        /$$$$$$$  /$$$$$$ /$$$$$$$$ /$$$$$$$ ");
+        mvaddstr(2, 1, "| $$__  $$| $$       /$$__  $$|  $$   /$$/| $$_____/| $$__  $$       /$$__  $$      | $$__  $$|_  $$_/| $$_____/| $$__  $$");
+        mvaddstr(3, 1, "| $$  \\ $$| $$      | $$  \\ $$ \\  $$ /$$/ | $$      | $$  \\ $$      |__/  \\ $$      | $$  \\ $$  | $$  | $$      | $$  \\ $$");
+        mvaddstr(4, 1, "| $$$$$$$/| $$      | $$$$$$$$  \\  $$$$/  | $$$$$   | $$$$$$$/        /$$$$$$/      | $$  | $$  | $$  | $$$$$   | $$  | $$");
+        mvaddstr(5, 1, "| $$____/ | $$      | $$__  $$   \\  $$/   | $$__/   | $$__  $$       /$$____/       | $$  | $$  | $$  | $$__/   | $$  | $$");
+        mvaddstr(6, 1, "| $$      | $$      | $$  | $$    | $$    | $$      | $$  \\ $$      | $$            | $$  | $$  | $$  | $$      | $$  | $$");
+        mvaddstr(7, 1, "| $$      | $$$$$$$$| $$  | $$    | $$    | $$$$$$$$| $$  | $$      | $$$$$$$$      | $$$$$$$/ /$$$$$$| $$$$$$$$| $$$$$$$/");
+        mvaddstr(8, 1, "|__/      |________/|__/  |__/    |__/    |________/|__/  |__/      |________/      |_______/ |______/|________/|_______/ ");
+        refresh();
+        MySleep(100000);
+        endwin();
+    }
+}
+    
 
 
 void Shoot(Ground & g, Player * players, int turn)
@@ -91,59 +137,18 @@ void Shoot(Ground & g, Player * players, int turn)
         if (players[turn].Hit((int)pN.x, (int)pN.y, g, players[abs(turn - 1)]))
         {
             players[abs(turn - 1)].life_counter--;
-            DrawScreen(g, players, turn);
             break;
+        }
+        
+        if (players[turn].life_counter == 0)
+        {
+            Die(turn + 1);
         }
         refresh();
         MySleep(50);
         
    	}
     
-    /*for (int i = 1; i < 10000; i++)
-	{
-		double di = i / time_divisor;
-        Vec2D pN = p0 + (force * di) + gravity * (di * di + di) * 0.5;
-        
-        //pNx = (int)(p0x + di * x_component);
-		//pNy = p0y + di * y_component + (di * di + di) * -9.8 / time_divisor / 1.5;
-		//pNy = (int)(LINES - pNy);
-        
-		if (pN.x < 1 || pN.x >= COLS - 2)
-			break;
-		if (pN.y < 1)
-        {
-
-			MySleep(50);
-			continue;
-		}
-		//if (pNy >= LINES - 2)
-			//break;
-		if (pN.y > g.ground.at((int)pN.x))
-			break;
-        
-        if (players[turn].Hit(pN.x, pN.y, players[abs(turn-1)]))
-            {
-                players[abs(turn - 1)].life_counter--;
-                break;
-            }
-        
-
-        move((int)pN.y - 1, (int)pN.x + 1);
-
-        move((int)pN.x - 1, (int)pN.y + 1);
-
-		addch('*');
-        refresh();
-		MySleep(50);
-    
-        
-        //if (players[abs(turn-1)].Hit((int)pNx, (int)pNy players[abs(turn - 1)]))
-        //{
-        //    players[abs(turn - 1)].life_counter--;
-        //    break;
-        //}
-    }*/
-
 }
 
 int main(int argc, char * argv[])
@@ -158,12 +163,16 @@ int main(int argc, char * argv[])
 	initscr();
 	noecho();
 	keypad(stdscr, 1);
-
-	g.InitializeGround();
-	players[0].Initialize(rand() % (COLS / 4), g.ground.at(players[0].col) - 1, LEFT);
-	players[1].Initialize(rand() % (COLS / 4) + 3 * COLS / 4 - 2, g.ground.at(players[1].col) - 1, RIGHT);
-
-	DrawScreen(g, players, turn);
+    
+    start_color();
+    init_pair(1, COLOR_CYAN, COLOR_BLACK);
+    attron(COLOR_PAIR(1));
+    
+    g.InitializeGround();
+ 	players[0].Initialize(rand() % (COLS / 4), g.ground.at(players[0].col) - 1, LEFT);
+    players[1].Initialize(rand() % (COLS / 4) + 3 * COLS / 4 - 2, g.ground.at(players[1].col) - 1, RIGHT);
+    
+ 	DrawScreen(g, players, turn);
 	while (keep_going)
 	{
 		bool show_char = false;
@@ -189,7 +198,15 @@ int main(int argc, char * argv[])
 		case 'd':
 			players[turn].AngleDown();
 			break;
-
+        
+        case 'k':
+            Die(1);
+            break;
+                
+        case 'j':
+            Die(2);
+            break;
+                
 		case 10:
 		case KEY_ENTER:
 #if defined(WIN32)

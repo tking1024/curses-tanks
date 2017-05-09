@@ -34,7 +34,20 @@ void Ground::InitializeGround()
 
 void Ground::Draw()
 {
-	for (size_t i = 0; i < ground.size(); i++) {
+    for (size_t i = 0; i < ground.size(); i++)
+    {
 		mvaddch(ground.at(i), i + 1, '-');
-	}
+    }
+}
+
+void Ground::Fill()
+{
+    for (size_t i = 2; i < ground.size(); i ++)
+    {
+        if (LINES - i > ground.at(i))
+        {
+            mvaddch(LINES - i, COLS - i, 'X');
+        }
+        
+    }
 }

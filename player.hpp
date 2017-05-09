@@ -22,7 +22,6 @@ public:
     bool Hit(int column, int line, Ground & g, Player & p);
 
 	int col;
-    int lin;
 	double power;
 	double angle;
 	Side s;

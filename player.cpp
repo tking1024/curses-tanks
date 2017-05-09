@@ -21,7 +21,6 @@ Player::Player()
 {
 	s = LEFT;
 	col = 0;
-    lin = 0;
 	angle = 45.0;
 	power = 50.0;
 }
@@ -30,13 +29,12 @@ void Player::Initialize(int column, int line, Side side)
 {
     
     col = column;
-    lin = line;
     s = side;
 }
 
 void Player::Draw(Ground & g)
 {
-	mvaddch(g.ground.at(col) - 1, col + 1, ACS_DIAMOND);
+    mvaddch(g.ground.at(col) - 1, col + 1, ACS_DIAMOND);
 }
 
 void Player::PowerUp()
